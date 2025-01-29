@@ -7,7 +7,6 @@ const courseSchema = new mongoose.Schema({
     },
     subTitle : {
         type: String , 
-        required : true
     },
     description :{
         type : String ,

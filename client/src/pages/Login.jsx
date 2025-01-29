@@ -58,17 +58,17 @@ export default function Login() {
 
   useEffect(()=>{
     if(registerIsSuccess && registerData){
-      toast.success(registerData.message || "Signup successful")
+      toast.success(registerData?.message || "Signup successful")
     }
     if(registerError){
-      toast.error(registerData.data.message || "Signup Failed")
+      toast.error(registerData.data?.message || "Signup Failed")
     }
     if(loginIsSuccess && loginData){
-      toast.success(loginData.message || "Login successful")
+      toast.success(loginData?.message || "Login successful")
       navigate("/")
     }
     if(loginError){
-      toast.error(loginError.data.message || "Login Failed")
+      toast.error(loginError.data?.message || "Login Failed")
     }
   },[loginIsLoading , registerIsLoading , loginData ,registerData, loginError , registerError])
 

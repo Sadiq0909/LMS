@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -13,24 +13,32 @@ import {
 } from "@/components/ui/select"
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { useCreateCourseMutation } from "@/features/api/courseApi";
+import { toast } from "sonner";
 
 const AddCourse = () => {
 
     const [courseTitle , setCourseTitle] = useState("");
     const [category , setCategory] = useState("") ;
 
+    const [createCourse ,{data , isLoading , error , isSuccess}] = useCreateCourseMutation();
+
     const navigate = useNavigate();
-    const isLoading = false ; 
+    // const isLoading = false ; 
 
     const getSelectedCategory = (value)=>{
         setCategory(value)
-        
     }
     
     const createCourseHandler = async()=>{
-        
-        console.log(courseTitle , category);
+        await createCourse({courseTitle , category})
     }
+
+    useEffect(()=>{
+        if(isSuccess){
+            toast.success(data?.message || "Course created successfully")
+        }
+    },[isSuccess , error])
 
     return (
         <div className="flex-1 mx-10">
