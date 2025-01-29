@@ -7,7 +7,7 @@ import { Outlet } from 'react-router-dom'
 const Sidebar = () => {
   return (
     <div className="flex">
-      <div className='hidden md:block w-[250px] lg:w-[300px] space-y-8 border-r border-gray-300 dark:border-gray-700 bg-zinc-300 p-5 h-screen top-0'>
+      <div className='hidden md:block w-[250px] lg:w-[300px] space-y-8 border-r border-gray-300 dark:border-gray-700 bg-zinc-300 p-5 sticky h-screen top-0'>
         <div className='mt-24 space-y-4'>
           <Link to={"dashboard"} className='flex items-center gap-2'>
             <ChartNoAxesColumn size={30} />
