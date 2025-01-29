@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import {
     Select,
     SelectContent,
@@ -14,11 +14,18 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import RichTextEditor from '@/components/RichTextEditor'
 import { Loader2 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useEditCourseMutation } from '@/features/api/courseApi'
+import { toast } from 'sonner'
 
 const CourseTab = () => {
-    const isLoading = false
+    // const isLoading = false
     const navigate = useNavigate()
+    const params = useParams()
+    const courseId = params.courseId ; 
+
+    const [editCourse , {data, isLoading , isSuccess ,error}] = useEditCourseMutation() ; 
+
     const [input, setInput] = useState({
         courseTitle: "",
         subTitle: "",
@@ -34,25 +41,41 @@ const CourseTab = () => {
         setInput({ ...input, [name]: value });
     };
     const selectCategory = (value) => {
-        setInput({ ...name, category: value })
-    }
-    const selectCourseLevel = (value) => {
-        setInput({ ...name, courseLevel: value })
-    }
+        setInput({ ...input, category: value });
+      };
+      const selectCourseLevel = (value) => {
+        setInput({ ...input, courseLevel: value });
+      };
     const selectThumbnail = (e) => {
         const file = e.target.files?.[0];
         if (file) {
-            setInput({ ...input, courseThumbnail: file })
-            const fileReader = new FileReader();
-            fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
-            fileReader.readAsDataURL(file)
+          setInput({ ...input, courseThumbnail: file });
+          const fileReader = new FileReader();
+          fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
+          fileReader.readAsDataURL(file);
         }
-    }
-    const updateCourseHandler = () => {
-        console.log(input);
-        console.log(input.courseTitle);
+      };
+    const updateCourseHandler = async () => {
+        const formData = new FormData();
+        formData.append("courseTitle", input.courseTitle);
+        formData.append("subTitle", input.subTitle);
+        formData.append("description", input.description);
+        formData.append("category", input.category);
+        formData.append("courseLevel", input.courseLevel);
+        formData.append("coursePrice", input.coursePrice);
+        formData.append("courseThumbnail", input.courseThumbnail);
+    
+        await editCourse({ formData, courseId });
+      };
 
-    }
+    useEffect(()=>{
+        if(isSuccess){
+            toast.success(data.message || "Course Updated..")
+        }
+        if(error){
+            toast.error(error.data.message || "Failed to Update the course")
+        }
+    },[isSuccess , error])
     const isPublished = true;
     return (
         <Card className="mb-20">
