@@ -23,7 +23,8 @@ export const courseApi = createApi({
                 method :"GET"
             }),
             providesTags : ["Refetch_Creator_Course"]
-        })
+        }),
+        
     })
 })
 

@@ -17,7 +17,7 @@ import { Loader2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 const CourseTab = () => {
-    const isLoading  = true
+    const isLoading = false
     const navigate = useNavigate()
     const [input, setInput] = useState({
         courseTitle: "",
@@ -28,13 +28,34 @@ const CourseTab = () => {
         coursePrice: "",
         courseThumbnail: ""
     })
-    const changeEventHandler = (E) => {
-        const { name, value } = E.target;
+    const [previewThumbnail, setPreviewThumbnail] = useState("");
+    const changeEventHandler = (e) => {
+        const { name, value } = e.target;
         setInput({ ...input, [name]: value });
+    };
+    const selectCategory = (value) => {
+        setInput({ ...name, category: value })
+    }
+    const selectCourseLevel = (value) => {
+        setInput({ ...name, courseLevel: value })
+    }
+    const selectThumbnail = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setInput({ ...input, courseThumbnail: file })
+            const fileReader = new FileReader();
+            fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
+            fileReader.readAsDataURL(file)
+        }
+    }
+    const updateCourseHandler = () => {
+        console.log(input);
+        console.log(input.courseTitle);
+
     }
     const isPublished = true;
     return (
-        <Card  className="mb-20">
+        <Card className="mb-20">
             <CardHeader className="flex flex-row justify-between">
                 <div>
                     <CardTitle>Basic Course Information</CardTitle>
@@ -53,115 +74,129 @@ const CourseTab = () => {
             </CardHeader>
             <CardContent>
                 <div className='mt-3 space-y-4'>
-                    <div>
-                        <Label>Title</Label>
-                        <Input
-                            type="text"
-                            placeholder="Enter course title....."
-                            name="courseTitle"
-                            value={input.courseTitle}
-                            onChange={changeEventHandler}
-                        />
-                    </div>
-                    <div>
-                        <Label>Subtitle</Label>
-                        <Input
-                            type="text"
-                            placeholder="Enter course subtitle....."
-                            name="subTitle"
-                            value={input.subTitle}
-                            onChange={changeEventHandler}
-                        />
-                    </div>
-                    <div>
-                        <Label>Description</Label>
-                        <RichTextEditor input={input} setInput={setInput} />
-                    </div>
-                    <div className="flex items-center gap-5">
-                        <div>
-                            <Label>Category</Label>
-                            <Select >
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select a category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Category</SelectLabel>
-                                        <SelectItem value="Next JS">Next JS</SelectItem>
-                                        <SelectItem value="Data Science">Data Science</SelectItem>
-                                        <SelectItem value="Frontend Development">
-                                            Frontend Development
-                                        </SelectItem>
-                                        <SelectItem value="Fullstack Development">
-                                            Fullstack Development
-                                        </SelectItem>
-                                        <SelectItem value="MERN Stack Development">
-                                            MERN Stack Development
-                                        </SelectItem>
-                                        <SelectItem value="Javascript">Javascript</SelectItem>
-                                        <SelectItem value="Python">Python</SelectItem>
-                                        <SelectItem value="Docker">Docker</SelectItem>
-                                        <SelectItem value="MongoDB">MongoDB</SelectItem>
-                                        <SelectItem value="HTML">HTML</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div>
-                            <Label>Course Level</Label>
-                            <Select >
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select a Course Level" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Category</SelectLabel>
-                                        <SelectItem value="Beginner">Beginner</SelectItem>
-                                        <SelectItem value="Intermediate">Intermediate</SelectItem>
-                                        <SelectItem value="Advance">
-                                        Advance
-                                        </SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div>
-                            <Label>Price</Label>
-                            <Input 
-                            type = "number"
-                            name ="coursePrice"
-                            value = {input.coursePrice}
-                            onChange = {changeEventHandler}
-                            placeholder = " ₹499 "
-                            className = "w-fit"
-                            />
-                        </div>
-                    </div>
-                        <div>
-                            <Label>Thumbnail</Label>
-                            <Input 
-                            type ="file"
-                            className = "w-fit"
-                            accept = "image/*"
-                            />
-                        </div>
-                        <div className='flex items-center space-x-4'>
-                            <Button variant = "outline" onClick ={()=>navigate("/admin/course")}>Cancel</Button>
-                            <Button disabled ={isLoading}>
-                                {
-                                    isLoading?(
-                                        <>
-                                        <Loader2 className='w-4 h-4 mr-2 animate-spin'/>
-                                        Please Wait
-                                        </>
-                                    ):"Save"
-                                }
-                            </Button>
-                        </div>
-                </div>
-            </CardContent>
-        </Card>
-    )
-}
+                <div>
+            <Label>Title</Label>
+            <Input
+              type="text"
+              name="courseTitle"
+              value={input.courseTitle}
+              onChange={changeEventHandler}
+              placeholder="Ex. Fullstack developer"
+            />
+          </div>
+          <div>
+            <Label>Subtitle</Label>
+            <Input
+              type="text"
+              name="subTitle"
+              value={input.subTitle}
+              onChange={changeEventHandler}
+              placeholder="Ex. Become a Fullstack developer from zero to hero in 2 months"
+            />
+          </div>
+          <div>
+            <Label>Description</Label>
+            <RichTextEditor input={input} setInput={setInput} />
+          </div>
+          <div className="flex items-center gap-5">
+            <div>
+              <Label>Category</Label>
+              <Select
+                defaultValue={input.category}
+                onValueChange={selectCategory}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Category</SelectLabel>
+                    <SelectItem value="Next JS">Next JS</SelectItem>
+                    <SelectItem value="Data Science">Data Science</SelectItem>
+                    <SelectItem value="Frontend Development">
+                      Frontend Development
+                    </SelectItem>
+                    <SelectItem value="Fullstack Development">
+                      Fullstack Development
+                    </SelectItem>
+                    <SelectItem value="MERN Stack Development">
+                      MERN Stack Development
+                    </SelectItem>
+                    <SelectItem value="Javascript">Javascript</SelectItem>
+                    <SelectItem value="Python">Python</SelectItem>
+                    <SelectItem value="Docker">Docker</SelectItem>
+                    <SelectItem value="MongoDB">MongoDB</SelectItem>
+                    <SelectItem value="HTML">HTML</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Course Level</Label>
+              <Select
+                defaultValue={input.courseLevel}
+                onValueChange={selectCourseLevel}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a course level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Course Level</SelectLabel>
+                    <SelectItem value="Beginner">Beginner</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="Advance">Advance</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Price in (INR)</Label>
+              <Input
+                type="number"
+                name="coursePrice"
+                value={input.coursePrice}
+                onChange={changeEventHandler}
+                placeholder="199"
+                className="w-fit"
+              />
+            </div>
+          </div>
+          <div>
+            <Label>Course Thumbnail</Label>
+            <Input
+              type="file"
+              onChange={selectThumbnail}
+              accept="image/*"
+              className="w-fit"
+            />
+            {previewThumbnail && (
+              <img
+                src={previewThumbnail}
+                className="e-64 my-2"
+                alt="Course Thumbnail"
+              />
+            )}
+          </div>
+          <div>
+            <Button onClick={() => navigate("/admin/course")} variant="outline">
+              Cancel
+            </Button>
+            <Button disabled={isLoading} onClick={updateCourseHandler}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                "Save"
+              )}
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
-export default CourseTab
+export default CourseTab;
