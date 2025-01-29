@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import React from 'react'
+import { Edit } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -11,6 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useNavigate } from 'react-router-dom'
+import { useGetCreatorCourseQuery } from '@/features/api/courseApi'
+ 
 const invoices = [
   {
     invoice: "INV001",
@@ -53,11 +57,17 @@ const invoices = [
     paymentStatus: "Unpaid",
     totalAmount: "$300.00",
     paymentMethod: "Credit Card",
-  } ] ; 
+  },
+]
 
 
 const CourseTable = () => {
+
+  const {data , isLoading} = useGetCreatorCourseQuery()
+
   const navigate = useNavigate() ;
+  if(isLoading) return <h1>Loading .... </h1>
+  console.log("data -> " , data);
   
   return (
     <div>
@@ -73,12 +83,12 @@ const CourseTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+        {data.courses.map((course) => (
+          <TableRow key={course._id}>
+            <TableCell className="font-medium">{course?.coursePrice || "NA"}</TableCell>
+            <TableCell><Badge>{course?.isPublished ?"Published" : "Draft"}</Badge></TableCell>
+            <TableCell>{course?.courseTitle}</TableCell>
+            <TableCell className="text-right"><Button><Edit /></Button></TableCell>
           </TableRow>
         ))}
       </TableBody>

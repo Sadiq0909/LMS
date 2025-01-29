@@ -15,9 +15,16 @@ export const courseApi = createApi({
                 body : {courseTitle , category}
             })
         }),
+        getCreatorCourse :builder.query({
+            query:()=>({
+                url : "" ,
+                method :"GET"
+            })
+        })
     })
 })
 
 export const {
-    useCreateCourseMutation
+    useCreateCourseMutation,
+    useGetCreatorCourseQuery
 } = courseApi ; 
