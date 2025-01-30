@@ -29,7 +29,8 @@ export const courseApi = createApi({
                 url : `/${courseId}`,
                 method : "PUT",
                 body : formData
-            })
+            }),
+            invalidatesTags : ["Refetch_Creator_Course"]
         }),
         getCourseById : builder.query({
             query : (courseId)=>({

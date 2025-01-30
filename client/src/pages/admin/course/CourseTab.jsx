@@ -1,103 +1,124 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select"
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import RichTextEditor from '@/components/RichTextEditor'
 import { Loader2 } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEditCourseMutation } from '@/features/api/courseApi'
+import { useEditCourseMutation, useGetCourseByIdQuery } from '@/features/api/courseApi'
 import { toast } from 'sonner'
 
 const CourseTab = () => {
-    // const isLoading = false
-    const navigate = useNavigate()
-    const params = useParams()
-    const courseId = params.courseId ; 
 
-    const [editCourse , {data, isLoading , isSuccess ,error}] = useEditCourseMutation() ; 
+  const navigate = useNavigate()
+  const params = useParams()
+  const courseId = params.courseId;
 
-    const [input, setInput] = useState({
-        courseTitle: "",
-        subTitle: "",
-        description: "",
-        category: "",
-        courseLevel: "",
-        coursePrice: "",
+  const [editCourse, { data, isLoading, isSuccess, error }] = useEditCourseMutation();
+
+  const [input, setInput] = useState({
+    courseTitle: "",
+    subTitle: "",
+    description: "",
+    category: "",
+    courseLevel: "",
+    coursePrice: "",
+    courseThumbnail: ""
+  })
+
+  const { data: courseByIdData, isLoading: courseByIdIsLoading } = useGetCourseByIdQuery(courseId,{refetchOnMountOrArgChange :true});
+
+  useEffect(() => {
+    if (courseByIdData?.course) {
+      const  course = courseByIdData?.course
+      setInput({
+        courseTitle: course.courseTitle,
+        subTitle: course.subTitle,
+        description: course.description,
+        category: course.category,
+        courseLevel: course.courseLevel,
+        coursePrice: course.coursePrice,
         courseThumbnail: ""
-    })
-    const [previewThumbnail, setPreviewThumbnail] = useState("");
-    const changeEventHandler = (e) => {
-        const { name, value } = e.target;
-        setInput({ ...input, [name]: value });
-    };
-    const selectCategory = (value) => {
-        setInput({ ...input, category: value });
-      };
-      const selectCourseLevel = (value) => {
-        setInput({ ...input, courseLevel: value });
-      };
-    const selectThumbnail = (e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          setInput({ ...input, courseThumbnail: file });
-          const fileReader = new FileReader();
-          fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
-          fileReader.readAsDataURL(file);
-        }
-      };
-    const updateCourseHandler = async () => {
-        const formData = new FormData();
-        formData.append("courseTitle", input.courseTitle);
-        formData.append("subTitle", input.subTitle);
-        formData.append("description", input.description);
-        formData.append("category", input.category);
-        formData.append("courseLevel", input.courseLevel);
-        formData.append("coursePrice", input.coursePrice);
-        formData.append("courseThumbnail", input.courseThumbnail);
-    
-        await editCourse({ formData, courseId });
-      };
+      })
+    }
+  }, [courseByIdData])
 
-    useEffect(()=>{
-        if(isSuccess){
-            toast.success(data.message || "Course Updated..")
-        }
-        if(error){
-            toast.error(error.data.message || "Failed to Update the course")
-        }
-    },[isSuccess , error])
-    const isPublished = true;
-    return (
-        <Card className="mb-20">
-            <CardHeader className="flex flex-row justify-between">
-                <div>
-                    <CardTitle>Basic Course Information</CardTitle>
-                    <CardDescription>Make changes to your courses here. Click save when you're done</CardDescription>
-                </div>
-                <div className='space-x-3'>
-                    <Button variant="outline">
-                        {
-                            isPublished ? "Unpublish" : "Publish"
-                        }
-                    </Button>
-                    <Button>
-                        Remove Course
-                    </Button>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <div className='mt-3 space-y-4'>
-                <div>
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+  const changeEventHandler = (e) => {
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
+  };
+  const selectCategory = (value) => {
+    setInput({ ...input, category: value });
+  };
+  const selectCourseLevel = (value) => {
+    setInput({ ...input, courseLevel: value });
+  };
+  const selectThumbnail = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setInput({ ...input, courseThumbnail: file });
+      const fileReader = new FileReader();
+      fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
+      fileReader.readAsDataURL(file);
+    }
+  };
+  const updateCourseHandler = async () => {
+    const formData = new FormData();
+    formData.append("courseTitle", input.courseTitle);
+    formData.append("subTitle", input.subTitle);
+    formData.append("description", input.description);
+    formData.append("category", input.category);
+    formData.append("courseLevel", input.courseLevel);
+    formData.append("coursePrice", input.coursePrice);
+    formData.append("courseThumbnail", input.courseThumbnail);
+
+    await editCourse({ formData, courseId });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "Course Updated..")
+    }
+    if (error) {
+      toast.error(error.data.message || "Failed to Update the course")
+    }
+  }, [isSuccess, error])
+
+  if(courseByIdIsLoading) return <Loader2 className='h-4 w-4 animate-spin'/>
+
+  const isPublished = true;
+  return (
+    <Card className="mb-20">
+      <CardHeader className="flex flex-row justify-between">
+        <div>
+          <CardTitle>Basic Course Information</CardTitle>
+          <CardDescription>Make changes to your courses here. Click save when you're done</CardDescription>
+        </div>
+        <div className='space-x-3'>
+          <Button variant="outline">
+            {
+              isPublished ? "Unpublish" : "Publish"
+            }
+          </Button>
+          <Button>
+            Remove Course
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className='mt-3 space-y-4'>
+          <div>
             <Label>Title</Label>
             <Input
               type="text"
