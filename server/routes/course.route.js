@@ -9,7 +9,7 @@ router.route("/").post(isAuthenticated , createCourse);
 router.route("/").get(isAuthenticated , getCreatorCourses);
 router.route("/:courseId").put(isAuthenticated,upload.single("courseThumbnail") , editCourse);
 router.route("/:courseId").get(isAuthenticated , getCourseById);
-router.route("/:courseId/lecture").post(isAuthenticated , createLecture) ; 
+router.route("/:courseId/lecture").post(isAuthenticated, createLecture);
 
 
 export default router;

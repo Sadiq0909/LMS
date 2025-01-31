@@ -39,10 +39,10 @@ export const courseApi = createApi({
             })
         }),
         createLecture:builder.mutation({
-            query :({courseTitle , courseId})=>({
+            query :({lectureTitle , courseId})=>({
                 url : `/${courseId}/lecture`,
                 method : "POST",
-                body : {courseTitle}
+                body : {lectureTitle}
             })
         })
     })
