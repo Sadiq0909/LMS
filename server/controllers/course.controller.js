@@ -132,11 +132,30 @@ export const createLecture = async(req,res)=>{
             message:"Lecture created successfully."
         });
     } catch (error) {
-        console.log(req.params.courseId);
-        
         console.log("createLectureControllers :" ,error);
         return res.status(500).json({
             message : "Failed to create lecture"
+        })
+    }
+}
+
+export const getCourseLecture = async(req,res)=>{
+    try {
+         const courseId = req.params.courseId ;
+         const course = await Course.findById(courseId).populate("lectures") ; 
+         if(!course){
+            return res.status(404).json({
+                message : "Lecture not found"
+            })
+         }
+         return res.status(200).json({
+            lectures : course.lectures, 
+         })
+
+    } catch (error) {
+        console.log("getLectureControllers :" ,error);
+        return res.status(500).json({
+            message : "Failed to get lecture"
         })
     }
 }
