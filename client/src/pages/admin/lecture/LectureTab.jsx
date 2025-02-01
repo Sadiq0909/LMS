@@ -14,7 +14,7 @@ const LectureTab = () => {
                     <CardDescription>Make changes and click save when done</CardDescription>
                 </div>
             </CardHeader>
-            <CardContent>
+            <CardContent >
                 <div>
                     <Label>Title</Label>
                     <Input
@@ -22,7 +22,7 @@ const LectureTab = () => {
                         placeholder="Title of Lecture"
                     />
                 </div>
-                <div>
+                <div className='mt-3'>
                     <Label>Video <span className='text-red-500'>*</span></Label>
                     <Input
                         type="file"
@@ -34,7 +34,7 @@ const LectureTab = () => {
                     <Switch id="free" />
                     <Label htmlFor="free">Is this video Free ?</Label>
                 </div>
-                <div className='mt-4 flex space-x-2'>
+                <div className= 'mt-5 flex space-x-2'>
                     <Button>
                         Remove Lecture
                     </Button>
