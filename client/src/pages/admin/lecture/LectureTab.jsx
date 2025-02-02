@@ -3,19 +3,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import axios from 'axios'
 import { Progress } from '@/components/ui/progress'
 import { toast } from 'sonner'
+import { useParams } from 'react-router-dom'
+import { useEditLectureMutation } from '@/features/api/courseApi'
 
 const LectureTab = () => {
 
-    const [title, setTitle] = useState('')
+    const params = useParams()
+    const {courseId , lectureId} = params;
+
+    const [lectureTitle, setLectureTitle] = useState('')
     const [uploadVideoInfo, setUploadVideoInfo] = useState(null)
     const [IsFree, setIsFree] = useState(false)
     const [mediaProgress, setMediaProgress] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(0)
     const [btnDisable, setBtnDisable] = useState(true)
+
+    const [EditLecture , {data,isLoading ,error , isSuccess}] = useEditLectureMutation()
+
 
     const fileChangeHandler = async (e) => {
         const file = e.target.files[0]
@@ -23,7 +31,7 @@ const LectureTab = () => {
             const formData = new FormData();
             formData.append('file', file);
             setMediaProgress(true);
-            
+
             try {
                 const res = await axios.post('http://localhost:8080/api/v1/media/upload-video', formData, {
                     onUploadProgress: (progressEvent) => {
@@ -51,6 +59,18 @@ const LectureTab = () => {
         }
     }
 
+    const EditLectureHandler = async () => {
+        await EditLecture({
+            lectureTitle,videoInfo :uploadVideoInfo , courseId , lectureId , inPreviewFree : IsFree 
+        }) 
+    }
+    useEffect(()=>{
+        if(isSuccess){
+            toast.success(data.message || "Lecture Updated Successfully")
+        }if(error){
+            toast.error(error.data.message || "Failed to Edit Lecture") 
+        }
+    } ,[data , isLoading , error , isSuccess])
 
     return (
         <Card>
@@ -65,6 +85,8 @@ const LectureTab = () => {
                     <Label>Title</Label>
                     <Input
                         type="text"
+                        value={lectureTitle}
+                        onChange={(e) => setLectureTitle(e.target.value)}
                         placeholder="Title of Lecture"
                     />
                 </div>
@@ -93,7 +115,7 @@ const LectureTab = () => {
                     <Button>
                         Remove Lecture
                     </Button>
-                    <Button variant="outline">
+                    <Button variant="outline" onClick={EditLectureHandler}>
                         Update Lecture
                     </Button>
                 </div>
