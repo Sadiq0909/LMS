@@ -169,7 +169,7 @@ export const editLecture = async (req, res) => {
             return res.status(404).json({
                 message : "Lecture not found"
             })
-        }
+        }        
         if(lectureTitle) lecture.lectureTitle = lectureTitle;
         if(videoInfo.videoUrl) lecture.videoUrl = videoInfo.videoUrl;
         if(videoInfo.publicId) lecture.publicId = videoInfo.publicId;
