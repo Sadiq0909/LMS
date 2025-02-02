@@ -8,7 +8,7 @@ import axios from 'axios'
 import { Progress } from '@/components/ui/progress'
 import { toast } from 'sonner'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEditLectureMutation, useRemoveLectureMutation } from '@/features/api/courseApi'
+import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from '@/features/api/courseApi'
 import { Loader2 } from 'lucide-react'
 
 const LectureTab = () => {
@@ -24,9 +24,19 @@ const LectureTab = () => {
     const [uploadProgress, setUploadProgress] = useState(0)
     const [btnDisable, setBtnDisable] = useState(true)
 
+    const {data : lectureData } = useGetLectureByIdQuery(lectureId) ; 
+    const lecture = lectureData?.lecture ; 
+
+    useEffect(() => {
+        if(lecture){
+            setLectureTitle(lecture.lectureTitle)
+            setUploadVideoInfo(lecture.videoInfo)
+            setIsFree(lecture.isPreviewFree)
+        }
+    },[lecture])
+
     const [EditLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation()
     const [removeLecture, { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }] = useRemoveLectureMutation();
-
 
     const fileChangeHandler = async (e) => {
         const file = e.target.files[0]
@@ -61,13 +71,11 @@ const LectureTab = () => {
 
         }
     }
-
     const EditLectureHandler = async () => {
         await EditLecture({
-            lectureTitle, videoInfo: uploadVideoInfo, courseId, lectureId, inPreviewFree: IsFree
+            lectureTitle, videoInfo: uploadVideoInfo, courseId, lectureId, isPreviewFree: IsFree
         })
     }
-
     const removeLectureHandler = async () => {
         await removeLecture({ lectureId })
         navigate(`/admin/course/${courseId}/lecture`)
@@ -115,7 +123,7 @@ const LectureTab = () => {
                     />
                 </div>
                 <div className="flex items-center space-x-3 my-5">
-                    <Switch id="free" />
+                    <Switch checked={IsFree} onCheckedChange={setIsFree} id="free" />
                     <Label htmlFor="free">Is this video Free ?</Label>
                 </div>
                 {
