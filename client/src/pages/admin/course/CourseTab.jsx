@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input'
 import RichTextEditor from '@/components/RichTextEditor'
 import { Loader2 } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEditCourseMutation, useGetCourseByIdQuery } from '@/features/api/courseApi'
+import { useEditCourseMutation, useGetCourseByIdQuery, usePublishCourseMutation } from '@/features/api/courseApi'
 import { toast } from 'sonner'
 
 const CourseTab = () => {
@@ -36,7 +36,9 @@ const CourseTab = () => {
     courseThumbnail: ""
   })
 
-  const { data: courseByIdData, isLoading: courseByIdIsLoading } = useGetCourseByIdQuery(courseId,{refetchOnMountOrArgChange :true});
+  const { data: courseByIdData, isLoading: courseByIdIsLoading  ,refetch} = useGetCourseByIdQuery(courseId,{refetchOnMountOrArgChange :true});
+  const [publishCourse , {}] = usePublishCourseMutation()
+
 
   useEffect(() => {
     if (courseByIdData?.course) {
@@ -85,6 +87,17 @@ const CourseTab = () => {
 
     await editCourse({ formData, courseId });
   };
+  const publishStatusHandler = async(action) =>{
+    try {
+    const response = await publishCourse({courseId , query : action})
+    if(response.data){
+      refetch() ; 
+      toast.success(response.data.message)
+    }
+    } catch (error) {
+      toast.error( "Failed to Publish or unpublish the course")
+    }    
+  }
 
   useEffect(() => {
     if (isSuccess) {
@@ -97,7 +110,6 @@ const CourseTab = () => {
 
   if(courseByIdIsLoading) return <Loader2 className='h-4 w-4 animate-spin'/>
 
-  const isPublished = true;
   return (
     <Card className="mb-20">
       <CardHeader className="flex flex-row justify-between">
@@ -106,9 +118,9 @@ const CourseTab = () => {
           <CardDescription>Make changes to your courses here. Click save when you're done</CardDescription>
         </div>
         <div className='space-x-3'>
-          <Button variant="outline">
+          <Button variant="outline" onClick ={()=> publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}>
             {
-              isPublished ? "Unpublish" : "Publish"
+              courseByIdData?.course.isPublished ? "Unpublish" : "Publish"
             }
           </Button>
           <Button>
