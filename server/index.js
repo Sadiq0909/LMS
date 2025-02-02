@@ -5,6 +5,7 @@ import cors from "cors" ;
 import connectDB from "./dbConnect.js";
 
 import userRoute from "./routes/user.route.js"
+import mediaRoute from "./routes/media.route.js"
 import courseRoute from "./routes/course.route.js"
 
 dotenv.config({}) ; 
@@ -24,6 +25,7 @@ app.use(cors({
 // APIs
 app.use("/api/v1/user" , userRoute) ;
 app.use("/api/v1/course" , courseRoute) ;
+app.use("api/v1/media" , mediaRoute) ;
 
 app.listen(PORT , ()=>{
     console.log(`Server listining on port ${PORT}`);
