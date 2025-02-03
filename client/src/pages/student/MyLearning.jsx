@@ -3,7 +3,7 @@ import Course from './Course';
 
 const MyLearning = () => {
     const isLoading = false ; 
-    const myLearningCourses = [7,3,3,4,] ; 
+    const myLearningCourses = [] ; 
   return (
     <div className="max-w-4xl mx-auto my-32 px-4 md:px-0">
         <h1 className='font-bold text-4xl text-zinc-800'>My Learning</h1>
@@ -14,7 +14,7 @@ const MyLearning = () => {
                 ):myLearningCourses.length === 0 ?(<p>You are not enrolled in any course.</p>) :
                 <div  className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                     {
-                        myLearningCourses.map((_,index)=><Course/>)
+                        myLearningCourses.map((course,index)=><Course key={index} course={course}/>)
                     }
                 </div>
             }
