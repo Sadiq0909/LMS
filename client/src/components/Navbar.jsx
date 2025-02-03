@@ -26,7 +26,6 @@ import { toast } from 'sonner'
 import { useSelector } from 'react-redux'
 
 
-
 const Navbar = () => {
     const { user } = useSelector(store => store.auth)
     const navigate = useNavigate();
@@ -47,7 +46,7 @@ const Navbar = () => {
             <div className="sm:flex justify-between items-center h-full hidden max-w-7xl mx-auto  px-5">
                 <div className="flex gap-2 h-full items-center">
                     <School size={"45"} />
-                    <h1 className='hidden sm:block font-extrabold text-3xl'>E-Learning</h1>
+                    <Link to="/"><h1 className='hidden sm:block font-extrabold text-3xl'>E-Learning</h1></Link>
                 </div>
                 <div className='flex  items-center gap-8'>
                     {

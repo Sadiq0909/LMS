@@ -266,3 +266,22 @@ export const togglePublishCourse = async(req,res)=>{
         });
     }
 }
+
+export const getPublishedCourse = async(_,res)=>{
+    try {
+        const courses = await Course.find({isPublished : true}).populate({path:"creator" , select :"name photoUrl"});
+        if(!courses){
+            return res.status(404).json({
+                message : "Courses not found"
+            })
+        }
+        return res.status(200).json({
+            courses
+        })
+    } catch (error) {
+        console.log("getPublishedCourseControllers :", error);
+        return res.status(500).json({
+            message: "Failed to get published courses"
+        });
+    }
+}

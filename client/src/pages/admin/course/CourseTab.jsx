@@ -118,7 +118,7 @@ const CourseTab = () => {
           <CardDescription>Make changes to your courses here. Click save when you're done</CardDescription>
         </div>
         <div className='space-x-3'>
-          <Button variant="outline" onClick ={()=> publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}>
+          <Button disabled = {courseByIdData?.course.lectures.length === 0} variant="outline" onClick ={()=> publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}>
             {
               courseByIdData?.course.isPublished ? "Unpublish" : "Publish"
             }
