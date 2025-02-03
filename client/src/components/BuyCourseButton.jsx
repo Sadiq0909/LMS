@@ -1,9 +1,12 @@
 import React from 'react'
+import { Button } from './ui/button'
 
 const BuyCourseButton = () => {
-  return (
-    <div>BuyCourseButton</div>
-  )
+    return (
+        <Button className ="w-full">
+            Purchase Course
+        </Button>
+    )
 }
 
 export default BuyCourseButton

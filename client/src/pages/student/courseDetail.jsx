@@ -1,3 +1,4 @@
+import BuyCourseButton from '@/components/BuyCourseButton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -6,7 +7,7 @@ import React from 'react'
 
 const CourseDetail = () => {
 
-    const purchasedCourse = true ; 
+    const purchasedCourse = false ; 
 
 
   return (
@@ -63,7 +64,7 @@ const CourseDetail = () => {
                                 purchasedCourse ? (
                                     <Button className ="w-full">Continue Learning</Button>
                                 ) : (
-                                    <Button className ="w-full">Purchase Course</Button>
+                                    <BuyCourseButton />
                                 )
                             }
                         </CardFooter>
