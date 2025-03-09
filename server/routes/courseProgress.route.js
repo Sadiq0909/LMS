@@ -8,3 +8,5 @@ router.route("/:courseId").get(isAuthenticated,getCourseProgress);
 router.route("/:courseId/lecture/:lectureId/view").get(isAuthenticated,updateLectureProgress);
 router.route("/:courseId/complete").get(isAuthenticated,markAsCompleted);
 router.route("/:courseId/incomplete").get(isAuthenticated,markAsInCompleted);
+
+export default router ; 
