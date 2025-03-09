@@ -13,6 +13,7 @@ import EditCourse from './pages/admin/course/EditCourse'
 import CreateLecture from './pages/admin/lecture/CreateLecture'
 import EditLecture from './pages/admin/lecture/EditLecture'
 import CourseDetail from './pages/student/courseDetail'
+import CourseProgress from './pages/student/CourseProgress'
 
 const appRouter = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const appRouter = createBrowserRouter([
       {
         path:"course-detail/:courseId",
         element : <CourseDetail/>
+      },
+      {
+        path:"course-progress/:courseId",
+        element : <CourseProgress/>
       },
 
       // Admin Routes
@@ -83,9 +88,6 @@ function App() {
 
   return (
     <main>
-      {/* <Navbar/>
-      <HeroSection />
-      <Login /> */}
       <RouterProvider router ={appRouter}/>
     </main>
   )
