@@ -5,8 +5,8 @@ import {getCourseProgress, markAsCompleted, markAsInCompleted, updateLectureProg
 const router = express.Router() ; 
 
 router.route("/:courseId").get(isAuthenticated,getCourseProgress);
-router.route("/:courseId/lecture/:lectureId/view").get(isAuthenticated,updateLectureProgress);
-router.route("/:courseId/complete").get(isAuthenticated,markAsCompleted);
-router.route("/:courseId/incomplete").get(isAuthenticated,markAsInCompleted);
+router.route("/:courseId/lecture/:lectureId/view").post(isAuthenticated,updateLectureProgress);
+router.route("/:courseId/complete").post(isAuthenticated,markAsCompleted);
+router.route("/:courseId/incomplete").post(isAuthenticated,markAsInCompleted);
 
 export default router ; 

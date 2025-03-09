@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { CheckCircle2, CirclePlay } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useGetCourseProgressQuery } from '@/features/api/courseProgressApi';
+import { useGetCourseProgressQuery, useUpdateLectureProgressMutation } from '@/features/api/courseProgressApi';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 const CourseProgress = () => {
@@ -13,6 +13,7 @@ const CourseProgress = () => {
   const { courseId , lectureId } = params;
 
   const { data, isLoading, isError, refetch } = useGetCourseProgressQuery(courseId);
+  const [updateLectureProgress] = useUpdateLectureProgressMutation() ;
   if (isLoading) return <h1>Loading ..... </h1>
   if (isError) return <h1>Failed to load Course Details</h1>
 
@@ -31,6 +32,11 @@ const CourseProgress = () => {
     setCurrentLecture(lecture)
   }
 
+  const handleLectureProgress = async (lectureId)=>{
+     await updateLectureProgress({courseId , lectureId});
+     refetch() ; 
+  }
+
 
   return (
     <div className='max-w-7xl mx-auto p-4 mt-20'>
@@ -47,6 +53,7 @@ const CourseProgress = () => {
             src={currentLecture?.videoUrl || initialLecture.videoUrl} 
             controls={true} 
             className='w-full h-auto md:rounded-lg'
+            onPlay={()=>handleLectureProgress(currentLecture?._id || initialLecture?._id)}
             />
           </div>
           {/* Display lecture title */}
@@ -54,7 +61,7 @@ const CourseProgress = () => {
             <h3 className="font-bold text-lg">
               {`Lecture ${courseDetails.lectures.findIndex(
                 (lec) =>
-                  lec._id === (currentLecture?._id || initialLecture._id)
+                  lec._id === (currentLecture?._id || initialLecture?._id)
               ) + 1
                 } : ${currentLecture?.lectureTitle || initialLecture.lectureTitle
                 }`}
@@ -70,7 +77,7 @@ const CourseProgress = () => {
               courseDetails.lectures.map((lecture, idx) => (
                 <Card 
                 key={idx} 
-                className={`mb-3 hover:cursor-pointer dark:bg-neutral-300 transition transform ${lecture._id=== currentLecture._id ?'bg-neutral-200' : 'dark:bg-neutral-800'}`} 
+                className={`mb-3 hover:cursor-pointer dark:bg-neutral-300 transition transform ${lecture?._id=== currentLecture?._id ?'bg-neutral-200' : 'dark:bg-neutral-800'}`} 
                 onClick = {()=>handleSelectLecture(lecture) }>
                   <CardContent className="flex items-center justify-between p-4">
                     <div className='flex items-center'>

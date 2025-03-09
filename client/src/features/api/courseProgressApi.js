@@ -14,9 +14,9 @@ export const courseProgressApi = createApi({
                 method : "GET"
             })
         }),
-        updateCourseProgress : builder.mutation({
+        updateLectureProgress : builder.mutation({
             query : ({courseId , lectureId}) =>({
-                url : `/${courseId}/lecture/${lectureId}/`,
+                url : `/${courseId}/lecture/${lectureId}/view`,
                 method : "POST"
             })
         }),
@@ -39,7 +39,7 @@ export const courseProgressApi = createApi({
 
 export const{
     useGetCourseProgressQuery , 
-    useUpdateCourseProgressMutation , 
+    useUpdateLectureProgressMutation , 
     useCompleteCourseMutation , 
     useInCompleteCourseMutation
 }  = courseProgressApi
