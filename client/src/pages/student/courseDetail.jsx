@@ -72,7 +72,7 @@ const CourseDetail = () => {
                                     width= "100%"
                                     height= "100%"
                                     url={course.lectures[0].videoUrl}
-                                    controls = "true"
+                                    controls = {true}
                                     />
                             </div>
                             <h1>Lecture Title</h1>
